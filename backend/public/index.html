@@ -10,9 +10,9 @@
   <div class="container">
     <!-- Start Screen -->
     <section id="start-screen" class="card">
-      <h1>O,X 퀴즈</h1>
-      <p class="muted">이름을 입력하고 퀴즈를 시작하세요.</p>
-      <input type="text" id="username" placeholder="이름을 입력하세요" />
+      <h1>🔥 O,X 퀴즈 🔥</h1>
+      <p class="muted">이름을 입력하고 도전하세요!</p>
+      <input type="text" id="username" placeholder="이름 입력" />
       <button id="start-btn">시작하기</button>
     </section>
 
@@ -24,8 +24,8 @@
       </div>
       <div id="question" class="question">문제가 표시됩니다.</div>
       <div class="buttons">
-        <button class="o-btn" data-answer="true">O</button>
-        <button class="x-btn" data-answer="false">X</button>
+        <button class="o-btn" data-answer="true">⭕ O</button>
+        <button class="x-btn" data-answer="false">❌ X</button>
       </div>
       <div id="feedback" class="feedback"></div>
     </section>
@@ -34,9 +34,8 @@
     <section id="result-screen" class="card hidden">
       <h2>🎉 퀴즈 완료!</h2>
       <p id="final-text">최종 점수: 0 / 0</p>
-      <p class="muted">결과가 서버에 저장됩니다.</p>
+      <p class="muted">수고하셨습니다 👏</p>
       <button id="retry-btn">다시 풀기</button>
-      <a class="link-btn" href="/admin.html" target="_blank">관리자 페이지 열기</a>
     </section>
   </div>
 
