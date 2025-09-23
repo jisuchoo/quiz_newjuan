@@ -25,7 +25,6 @@ const resultScreen = document.getElementById("result-screen");
 
 const usernameInput = document.getElementById("username");
 const startBtn = document.getElementById("start-btn");
-const retryBtn = document.getElementById("retry-btn");
 
 const progressText = document.getElementById("progress-text");
 const progressFill = document.getElementById("progress-fill");
@@ -53,12 +52,6 @@ startBtn.addEventListener("click", () => {
   renderQuestion();
 });
 
-retryBtn.addEventListener("click", () => {
-  resultScreen.classList.add("hidden");
-  startScreen.classList.remove("hidden");
-  usernameInput.value = "";
-  usernameInput.focus();
-});
 
 buttons.forEach(btn => {
   btn.addEventListener("click", () => {
