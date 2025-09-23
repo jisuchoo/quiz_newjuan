@@ -13,16 +13,11 @@ const quizData = [
 ];
 
 // ===== 상태 =====
-let username = "";
 let current = 0;
 let score = 0;
 const total = quizData.length;
 
 // ===== 엘리먼트 =====
-const startBtn = document.getElementById("start-btn");
-const retryBtn = document.getElementById("retry-btn");
-
-const usernameInput = document.getElementById("username");
 const progressText = document.getElementById("progress-text");
 const progressFill = document.getElementById("progress-fill");
 const scoreText = document.getElementById("score-text");
@@ -35,24 +30,14 @@ const quizButtons = document.querySelector(".quiz-buttons");
 const resultScreen = document.getElementById("result-screen");
 
 const buttons = document.querySelectorAll(".quiz-btn");
+const retryBtn = document.getElementById("retry-btn");
 
 // ===== 이벤트 =====
-startBtn.addEventListener("click", () => {
-  const name = usernameInput.value.trim();
-  if (!name) {
-    alert("이름을 입력하세요!");
-    return;
-  }
-  username = name;
-
-  // 시작 화면 숨기고 퀴즈 시작
-  document.getElementById("start-screen")?.classList.add("hidden");
-  quizCard.classList.remove("hidden");
-  quizButtons.classList.remove("hidden");
-
-  current = 0;
-  score = 0;
-  renderQuestion();
+buttons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    const val = btn.getAttribute("data-answer") === "true";
+    checkAnswer(val);
+  });
 });
 
 retryBtn.addEventListener("click", () => {
@@ -64,16 +49,7 @@ retryBtn.addEventListener("click", () => {
   renderQuestion();
 });
 
-buttons.forEach(btn => {
-  btn.addEventListener("click", () => {
-    const val = btn.getAttribute("data-answer") === "true";
-    checkAnswer(val);
-  });
-});
-
 // ===== 함수 =====
-
-// 문제 렌더링
 function renderQuestion() {
   if (current >= total) {
     return finishQuiz();
@@ -86,7 +62,6 @@ function renderQuestion() {
   progressFill.style.width = `${(current / total) * 100}%`;
 }
 
-// 정답 확인
 function checkAnswer(userAnswer) {
   const correct = quizData[current].answer;
   if (userAnswer === correct) {
@@ -103,7 +78,6 @@ function checkAnswer(userAnswer) {
   }, 400);
 }
 
-// 퀴즈 완료
 function finishQuiz() {
   quizCard.classList.add("hidden");
   quizButtons.classList.add("hidden");
@@ -113,10 +87,13 @@ function finishQuiz() {
   scoreText.textContent = `점수: ${score}`;
   finalText.textContent = `최종 점수: ${score} / ${total}`;
 
-  // 서버에 결과 제출
+  // 서버에 결과 제출 (백엔드와 연결되어 있다면)
   fetch("/api/submit", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name: username, score, total })
+    body: JSON.stringify({ name: "익명참가자", score, total })
   }).catch(err => console.error("결과 제출 실패:", err));
 }
+
+// ===== 초기화 =====
+renderQuestion();
