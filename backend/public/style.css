@@ -40,7 +40,7 @@ html, body {
 .hidden { display: none; }
 
 h1 {
-  font-size: 100px;
+  font-size: 50px;
   margin-bottom: 16px;
   color: #ff5722;
 }
