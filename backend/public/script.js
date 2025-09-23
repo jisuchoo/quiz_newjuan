@@ -13,40 +13,58 @@ const quizData = [
 ];
 
 // ===== 상태 =====
+let username = "";
 let current = 0;
 let score = 0;
 const total = quizData.length;
 
 // ===== 엘리먼트 =====
+const startScreen = document.getElementById("start-screen");
+const quizScreen = document.getElementById("quiz-screen");
+const resultScreen = document.getElementById("result-screen");
+
+const usernameInput = document.getElementById("username");
+const startBtn = document.getElementById("start-btn");
+const retryBtn = document.getElementById("retry-btn");
+
 const progressText = document.getElementById("progress-text");
 const progressFill = document.getElementById("progress-fill");
 const scoreText = document.getElementById("score-text");
 const questionLabel = document.getElementById("question-label");
 const questionEl = document.getElementById("question");
-const finalText = document.getElementById("final-text");
-
-const quizCard = document.querySelector(".quiz-card");
-const quizButtons = document.querySelector(".quiz-buttons");
-const resultScreen = document.getElementById("result-screen");
 
 const buttons = document.querySelectorAll(".quiz-btn");
-const retryBtn = document.getElementById("retry-btn");
+const finalText = document.getElementById("final-text");
 
 // ===== 이벤트 =====
+startBtn.addEventListener("click", () => {
+  const name = usernameInput.value.trim();
+  if (!name) {
+    alert("이름을 입력하세요!");
+    return;
+  }
+  username = name;
+
+  startScreen.classList.add("hidden");
+  quizScreen.classList.remove("hidden");
+
+  current = 0;
+  score = 0;
+  renderQuestion();
+});
+
+retryBtn.addEventListener("click", () => {
+  resultScreen.classList.add("hidden");
+  startScreen.classList.remove("hidden");
+  usernameInput.value = "";
+  usernameInput.focus();
+});
+
 buttons.forEach(btn => {
   btn.addEventListener("click", () => {
     const val = btn.getAttribute("data-answer") === "true";
     checkAnswer(val);
   });
-});
-
-retryBtn.addEventListener("click", () => {
-  resultScreen.classList.add("hidden");
-  quizCard.classList.remove("hidden");
-  quizButtons.classList.remove("hidden");
-  current = 0;
-  score = 0;
-  renderQuestion();
 });
 
 // ===== 함수 =====
@@ -64,9 +82,7 @@ function renderQuestion() {
 
 function checkAnswer(userAnswer) {
   const correct = quizData[current].answer;
-  if (userAnswer === correct) {
-    score++;
-  }
+  if (userAnswer === correct) score++;
   current++;
 
   setTimeout(() => {
@@ -79,21 +95,17 @@ function checkAnswer(userAnswer) {
 }
 
 function finishQuiz() {
-  quizCard.classList.add("hidden");
-  quizButtons.classList.add("hidden");
+  quizScreen.classList.add("hidden");
   resultScreen.classList.remove("hidden");
 
   progressFill.style.width = "100%";
   scoreText.textContent = `점수: ${score}`;
   finalText.textContent = `최종 점수: ${score} / ${total}`;
 
-  // 서버에 결과 제출 (백엔드와 연결되어 있다면)
+  // 서버 저장
   fetch("/api/submit", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name: "익명참가자", score, total })
+    body: JSON.stringify({ name: username, score, total })
   }).catch(err => console.error("결과 제출 실패:", err));
 }
-
-// ===== 초기화 =====
-renderQuestion();
