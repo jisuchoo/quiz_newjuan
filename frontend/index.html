@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>O,X 퀴즈</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="quiz-box" id="start-screen">
+    <h1>O,X 퀴즈</h1>
+    <input type="text" id="username" placeholder="이름 입력" />
+    <button onclick="startQuiz()">시작하기</button>
+  </div>
+
+  <div class="quiz-box" id="quiz-screen" style="display:none;">
+    <div class="question" id="question"></div>
+    <div class="buttons">
+      <button class="o-btn" onclick="checkAnswer(true)">O</button>
+      <button class="x-btn" onclick="checkAnswer(false)">X</button>
+    </div>
+    <div class="result" id="result"></div>
+    <div class="score" id="score"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
