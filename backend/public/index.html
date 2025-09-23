@@ -8,33 +8,40 @@
 </head>
 <body>
   <div class="quiz-container">
-    <!-- 상단 헤더 -->
-    <header class="quiz-header">
+    <!-- 이름 입력 화면 -->
+    <section id="start-screen" class="card">
       <h1>🔥 O,X 퀴즈 🔥</h1>
-      <div class="quiz-status">
-        <span id="progress-text">0 / 0</span>
-        <div class="progress-bar">
-          <div id="progress-fill"></div>
+      <p class="muted">이름을 입력하고 시작하세요</p>
+      <input type="text" id="username" placeholder="이름 입력" />
+      <button id="start-btn">시작하기</button>
+    </section>
+
+    <!-- 퀴즈 화면 -->
+    <section id="quiz-screen" class="hidden">
+      <header class="quiz-header">
+        <div class="quiz-status">
+          <span id="progress-text">0 / 0</span>
+          <div class="progress-bar">
+            <div id="progress-fill"></div>
+          </div>
+          <span id="score-text">점수: 0</span>
         </div>
-        <span id="score-text">점수: 0</span>
+      </header>
+
+      <div class="quiz-card">
+        <div class="quiz-emoji">🤔</div>
+        <p class="quiz-label" id="question-label">문제 0</p>
+        <p id="question" class="quiz-question">문제가 여기에 표시됩니다.</p>
       </div>
-    </header>
 
-    <!-- 문제 카드 -->
-    <div class="quiz-card">
-      <div class="quiz-emoji">🤔</div>
-      <p class="quiz-label" id="question-label">문제 0</p>
-      <p id="question" class="quiz-question">문제가 여기에 표시됩니다.</p>
-    </div>
-
-    <!-- 버튼 -->
-    <div class="quiz-buttons">
-      <button class="quiz-btn yes" data-answer="true">O</button>
-      <button class="quiz-btn no" data-answer="false">X</button>
-    </div>
+      <div class="quiz-buttons">
+        <button class="quiz-btn yes" data-answer="true">O</button>
+        <button class="quiz-btn no" data-answer="false">X</button>
+      </div>
+    </section>
 
     <!-- 결과 화면 -->
-    <section id="result-screen" class="hidden">
+    <section id="result-screen" class="hidden card">
       <h2>🎉 퀴즈 완료!</h2>
       <p id="final-text">최종 점수: 0 / 0</p>
       <p class="muted">수고하셨습니다 👏</p>
