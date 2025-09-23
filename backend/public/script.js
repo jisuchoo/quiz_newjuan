@@ -1,4 +1,3 @@
-
 // ===== 퀴즈 데이터 (원하실 때 자유롭게 교체하세요) =====
 const quizData = [
   { question: "한화손해보험에서는 2025년 9월 22일 치매담보인 '최경증치매및경증알츠하이머치매표적약물허가치료비'를 출시하였다.", answer: true },
@@ -20,21 +19,22 @@ let score = 0;
 const total = quizData.length;
 
 // ===== 엘리먼트 =====
-const startScreen = document.getElementById("start-screen");
-const quizScreen = document.getElementById("quiz-screen");
-const resultScreen = document.getElementById("result-screen");
-
 const startBtn = document.getElementById("start-btn");
 const retryBtn = document.getElementById("retry-btn");
 
 const usernameInput = document.getElementById("username");
-const progressEl = document.getElementById("progress");
-const scoreEl = document.getElementById("score");
+const progressText = document.getElementById("progress-text");
+const progressFill = document.getElementById("progress-fill");
+const scoreText = document.getElementById("score-text");
+const questionLabel = document.getElementById("question-label");
 const questionEl = document.getElementById("question");
-const feedbackEl = document.getElementById("feedback");
 const finalText = document.getElementById("final-text");
 
-const buttons = document.querySelectorAll(".buttons button");
+const quizCard = document.querySelector(".quiz-card");
+const quizButtons = document.querySelector(".quiz-buttons");
+const resultScreen = document.getElementById("result-screen");
+
+const buttons = document.querySelectorAll(".quiz-btn");
 
 // ===== 이벤트 =====
 startBtn.addEventListener("click", () => {
@@ -44,8 +44,12 @@ startBtn.addEventListener("click", () => {
     return;
   }
   username = name;
-  startScreen.classList.add("hidden");
-  quizScreen.classList.remove("hidden");
+
+  // 시작 화면 숨기고 퀴즈 시작
+  document.getElementById("start-screen")?.classList.add("hidden");
+  quizCard.classList.remove("hidden");
+  quizButtons.classList.remove("hidden");
+
   current = 0;
   score = 0;
   renderQuestion();
@@ -53,8 +57,11 @@ startBtn.addEventListener("click", () => {
 
 retryBtn.addEventListener("click", () => {
   resultScreen.classList.add("hidden");
-  startScreen.classList.remove("hidden");
-  usernameInput.focus();
+  quizCard.classList.remove("hidden");
+  quizButtons.classList.remove("hidden");
+  current = 0;
+  score = 0;
+  renderQuestion();
 });
 
 buttons.forEach(btn => {
@@ -65,51 +72,51 @@ buttons.forEach(btn => {
 });
 
 // ===== 함수 =====
+
+// 문제 렌더링
 function renderQuestion() {
   if (current >= total) {
     return finishQuiz();
   }
   const q = quizData[current];
   questionEl.textContent = q.question;
-  progressEl.textContent = `문제 ${current + 1} / ${total}`;
-  scoreEl.textContent = `점수 ${score}`;
-  feedbackEl.textContent = "";
+  questionLabel.textContent = `문제 ${current + 1}`;
+  progressText.textContent = `${current + 1} / ${total}`;
+  scoreText.textContent = `점수: ${score}`;
+  progressFill.style.width = `${(current / total) * 100}%`;
 }
 
+// 정답 확인
 function checkAnswer(userAnswer) {
   const correct = quizData[current].answer;
   if (userAnswer === correct) {
     score++;
-    feedbackEl.textContent = "✅ 정답!";
-  } else {
-    feedbackEl.textContent = "❌ 오답!";
   }
   current++;
 
-  // 다음 문제로 살짝 텀 두고 이동
   setTimeout(() => {
     if (current < total) {
       renderQuestion();
     } else {
       finishQuiz();
     }
-  }, 700);
+  }, 400);
 }
 
-async function finishQuiz() {
-  quizScreen.classList.add("hidden");
+// 퀴즈 완료
+function finishQuiz() {
+  quizCard.classList.add("hidden");
+  quizButtons.classList.add("hidden");
   resultScreen.classList.remove("hidden");
+
+  progressFill.style.width = "100%";
+  scoreText.textContent = `점수: ${score}`;
   finalText.textContent = `최종 점수: ${score} / ${total}`;
 
-  // 서버 제출
-  try {
-    await fetch("/api/submit", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: username, score, total })
-    });
-  } catch (e) {
-    console.error(e);
-    // 제출 실패해도 화면은 진행
-  }
+  // 서버에 결과 제출
+  fetch("/api/submit", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name: username, score, total })
+  }).catch(err => console.error("결과 제출 실패:", err));
 }
