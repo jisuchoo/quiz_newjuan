@@ -40,7 +40,7 @@ html, body {
 .hidden { display: none; }
 
 h1 {
-  font-size: 42px;
+  font-size: 100px;
   margin-bottom: 16px;
   color: #ff5722;
 }
@@ -91,7 +91,7 @@ button:active { transform: scale(0.97); }
 }
 
 .question {
-  font-size: 30px;
+  font-size: 100px;
   line-height: 1.6;
   text-align: center;
   margin: 24px 0 32px 0;
@@ -105,7 +105,7 @@ button:active { transform: scale(0.97); }
 }
 
 .o-btn, .x-btn {
-  min-width: 150px;
+  min-width: 320px;
   font-size: 26px;
 }
 
