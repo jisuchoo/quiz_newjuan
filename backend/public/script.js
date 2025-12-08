@@ -1,8 +1,8 @@
-// ===== 1. URL에서 사번(code) 추출하기 =====
+// ===== 1. URL에서 사번(code) 추출 (예: ?code=202401) =====
 const urlParams = new URLSearchParams(window.location.search);
-const referralCode = urlParams.get("code") || ""; // 예: ?code=202501 -> 202501 저장
+const referralCode = urlParams.get("code") || ""; 
 
-// ===== 운전자 위험도 자가진단 데이터 =====
+// ===== 2. 운전자 위험도 자가진단 데이터 =====
 const quizData = [
   { 
     question: "출퇴근길이나 자주 가는 곳에 '비보호 좌회전' 신호가 있나요?", 
@@ -47,18 +47,18 @@ const quizData = [
   { 
     question: "전동 킥보드나 오토바이가 갑자기 튀어나와 식은땀을 흘린 적이 있나요?", 
     desc: "💡 상대방 과실이라도 피해자가 사망/중상해를 입으면 운전자에게도 형사적 책임이 발생할 수 있습니다.",
-    score: 20 // 중요해서 배점 2배
+    score: 20 // 중요도 2배
   },
 ];
 
 // ===== 상태 관리 =====
 let username = "";
 let current = 0;
-let score = 0; // 위험 점수 (높을수록 위험)
+let score = 0; // 위험 점수
 const totalQuestions = quizData.length;
 const maxPossibleScore = 100;
 
-// ===== DOM 엘리먼트 =====
+// ===== DOM =====
 const startScreen = document.getElementById("start-screen");
 const quizScreen = document.getElementById("quiz-screen");
 const resultScreen = document.getElementById("result-screen");
@@ -71,15 +71,14 @@ const progressText = document.getElementById("progress-text");
 const progressFill = document.getElementById("progress-fill");
 
 const questionEl = document.getElementById("question");
-const descEl = document.getElementById("quiz-desc"); // 설명 텍스트
+const descEl = document.getElementById("quiz-desc");
 
 const buttons = document.querySelectorAll(".quiz-btn");
-
 const resultBadge = document.getElementById("result-badge");
 const finalScore = document.getElementById("final-score");
 const finalMessage = document.getElementById("final-message");
 
-// ===== 이벤트 리스너 =====
+// ===== 이벤트 =====
 startBtn.addEventListener("click", () => {
   const name = usernameInput.value.trim();
   if (!name) {
@@ -101,8 +100,7 @@ restartBtn.addEventListener("click", () => {
   location.reload();
 });
 
-// ===== 로직 함수 =====
-
+// ===== 로직 =====
 function startGame() {
   startScreen.classList.add("hidden");
   quizScreen.classList.remove("hidden");
@@ -117,33 +115,25 @@ function renderQuestion() {
   }
   const q = quizData[current];
   
-  // 텍스트 업데이트
   questionEl.textContent = q.question;
   descEl.textContent = q.desc;
   
-  // 진행바 업데이트
   progressText.textContent = `${current + 1} / ${totalQuestions}`;
   progressFill.style.width = `${(current / totalQuestions) * 100}%`;
 }
 
 function handleAnswer(isYes) {
-  // '네'라고 답하면 해당 문제의 점수(위험도) 누적
   if (isYes) {
     score += quizData[current].score;
   }
-  
   current++;
-  setTimeout(() => {
-    renderQuestion();
-  }, 150);
+  setTimeout(() => renderQuestion(), 150);
 }
 
-// ===== 2. 결과 전송 시 사번(referralCode) 함께 전송 =====
 function finishQuiz() {
   quizScreen.classList.add("hidden");
   resultScreen.classList.remove("hidden");
 
-  // 결과 화면 텍스트 처리 (기존 동일)
   finalScore.textContent = `${score}점`;
   resultBadge.className = "result-badge";
   finalScore.className = "final-score-text";
@@ -165,7 +155,7 @@ function finishQuiz() {
     finalMessage.innerHTML = `훌륭합니다! 👍<br><b>${username}</b>님은 매우 안전한 환경에서 운전하고 계시네요.<br><br>하지만 '민식이법' 등 법률이 계속 강화되고 있으니,<br>최신 법규에 맞춰 보험을 한번 가볍게 살펴보시면<br>더욱 완벽할 것입니다.`;
   }
 
-  // ★ 변경된 부분: referer 추가 전송 ★
+  // ★ 사번(referer) 포함하여 전송
   fetch("/api/submit", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -173,7 +163,7 @@ function finishQuiz() {
       name: username, 
       score: score, 
       total: maxPossibleScore,
-      referer: referralCode // 사번 전송
+      referer: referralCode 
     })
   }).catch(err => console.error("결과 전송 실패:", err));
 }
