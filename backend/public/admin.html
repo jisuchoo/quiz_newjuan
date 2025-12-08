@@ -1,9 +1,36 @@
-<table id="scoreTable">
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>퀴즈 결과 관리자</title>
+  <link rel="stylesheet" href="./style.css" />
+  <style>
+    .admin-wrap { max-width: 960px; margin: 24px auto; }
+    .admin-actions { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+    .search-input { padding: 10px 12px; border: 1px solid #ddd; border-radius: 10px; flex: 1; min-width: 220px; }
+    table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 6px 20px rgba(0,0,0,0.06); }
+    th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: center; }
+    th { background: #fafafa; font-weight: 700; }
+    tr:last-child td { border-bottom: none; }
+    .link-btn { text-decoration: none; background: #eee; padding: 10px; border-radius: 10px; color: #333; font-size: 14px;}
+  </style>
+</head>
+<body>
+  <div class="admin-wrap">
+    <h1>📋 참여자 현황 리스트</h1>
+    <div class="admin-actions">
+      <input id="search" class="search-input" type="text" placeholder="이름 또는 사번 검색" />
+      <button id="refresh-btn" class="quiz-btn yes" style="padding:10px; font-size:14px; flex:0;">새로고침</button>
+      <a href="/" class="link-btn">퀴즈 페이지로 이동</a>
+    </div>
+
+    <table id="scoreTable">
       <thead>
         <tr>
           <th>#</th>
           <th>이름</th>
-          <th>담당자(사번)</th> <th>점수</th>
+          <th>담당자(사번)</th> <th>위험점수</th>
           <th>응시일시</th>
         </tr>
       </thead>
@@ -23,7 +50,7 @@
       list.forEach((r, idx) => {
         const tr = document.createElement("tr");
         
-        // 사번이 있으면 굵게 표시, 없으면 '-'
+        // 사번 스타일링 (주황색 볼드)
         const refererDisplay = r.referer && r.referer !== "-" 
           ? `<span style="color:#f37321; font-weight:bold;">${r.referer}</span>` 
           : "<span style='color:#ccc;'>-</span>";
@@ -31,14 +58,14 @@
         tr.innerHTML = `
           <td>${idx + 1}</td>
           <td>${r.name}</td>
-          <td>${refererDisplay}</td> <td><strong>${r.score}</strong></td>
+          <td>${refererDisplay}</td>
+          <td><strong>${r.score}</strong></td>
           <td>${r.date}</td>
         `;
         tbody.appendChild(tr);
       });
     }
 
-    // ... (load, search 이벤트 등 나머지 코드는 기존과 동일) ...
     async function load() {
       const res = await fetch("/api/scores");
       const json = await res.json();
@@ -49,12 +76,15 @@
       cache = json.data;
       render(cache);
     }
+
     search.addEventListener("input", () => {
       const q = search.value.trim();
       if (!q) return render(cache);
-      const f = cache.filter(x => x.name.includes(q) || (x.referer && x.referer.includes(q))); // 사번으로도 검색 가능하게 추가
+      // 이름 또는 사번으로 검색
+      const f = cache.filter(x => x.name.includes(q) || (x.referer && x.referer.includes(q)));
       render(f);
     });
+
     refreshBtn.addEventListener("click", load);
     load();
   </script>
