@@ -1,4 +1,3 @@
-// 기존 코드 덮어쓰기 (전체 server.js를 아래 내용으로 교체하셔도 됩니다)
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -6,28 +5,32 @@ const path = require("path");
 
 const app = express();
 
+// Middlewares
 app.use(bodyParser.json());
 app.use(cors());
 
-let scores = []; // 데이터 저장소
+// ===== 데이터 저장소 (메모리) =====
+// 서버가 재시작되면 초기화됩니다. (영구 저장이 필요하면 DB 연동 필요)
+let scores = [];
 
 // ===== API =====
 
+// 결과 제출
 app.post("/api/submit", (req, res) => {
   try {
-    // 1. referer(사번) 항목 추가 수신
+    // referer(사번) 항목 수신 추가
     const { name, score, total, referer } = req.body;
 
     if (typeof name !== "string" || !name.trim()) {
       return res.status(400).json({ ok: false, error: "이름을 입력하세요." });
     }
-
+    
+    // 데이터 저장 객체 생성
     const record = {
       name: name.trim(),
       score,
       total,
-      // 2. 사번이 없으면 '-' 로 저장
-      referer: referer || "-", 
+      referer: referer || "-", // 사번이 없으면 '-'로 저장
       date: new Date().toLocaleString("ko-KR", { hour12: false })
     };
 
@@ -39,7 +42,9 @@ app.post("/api/submit", (req, res) => {
   }
 });
 
+// 결과 목록 조회 (관리자용)
 app.get("/api/scores", (_req, res) => {
+  // 최신순 정렬
   const sorted = [...scores].reverse();
   res.json({ ok: true, data: sorted });
 });
@@ -48,6 +53,7 @@ app.get("/api/scores", (_req, res) => {
 const staticDir = path.join(__dirname, "public");
 app.use(express.static(staticDir));
 
+// SPA 기본 라우트
 app.get("*", (req, res) => {
   res.sendFile(path.join(staticDir, "index.html"));
 });
