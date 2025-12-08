@@ -3,16 +3,19 @@
   --card: #ffffff;
   --text: #333;
   --muted: #888;
+  
+  /* 한화 오렌지 테마 */
   --brand: #f37321; 
   --brand-dark: #d65a0e;
   --brand-weak: #ffeacc;
   
-  --yes: #ff5e00; /* 위험 체크이므로 조금 더 강렬한 주황 */
+  --yes: #ff5e00; 
   --no: #888;    
   
   --radius: 16px;
   --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 
+  /* 결과 등급 컬러 */
   --safe: #4CAF50;
   --warn: #FFC107;
   --danger: #F44336;
@@ -51,6 +54,7 @@ h1.main-title {
   line-height: 1.4;
 }
 
+/* 헤더 */
 .quiz-header { margin-bottom: 20px; }
 .quiz-status {
   display: flex; align-items: center; gap: 12px;
@@ -65,6 +69,7 @@ h1.main-title {
   transition: width 0.3s ease;
 }
 
+/* 문제 카드 */
 .quiz-card {
   background: var(--card);
   border-radius: var(--radius);
@@ -76,7 +81,7 @@ h1.main-title {
   flex-direction: column;
   align-items: center;
   justify-content: center; 
-  min-height: 280px; /* 높이 약간 증가 */
+  min-height: 300px;
   border-top: 6px solid var(--brand);
 }
 
@@ -99,7 +104,7 @@ h1.main-title {
   word-break: keep-all;
 }
 
-/* 설명 박스 스타일 추가 */
+/* 설명 박스 */
 .quiz-desc-box {
   background: #f8f9fa;
   border-left: 4px solid #aaa;
@@ -107,7 +112,7 @@ h1.main-title {
   border-radius: 4px;
   width: 100%;
   text-align: left;
-  margin-top: auto; /* 아래로 밀기 */
+  margin-top: auto; 
 }
 #quiz-desc {
   font-size: 15px;
@@ -117,6 +122,7 @@ h1.main-title {
   word-break: keep-all;
 }
 
+/* 버튼 */
 .quiz-buttons { display: flex; gap: 12px; }
 .quiz-btn {
   flex: 1; padding: 20px; font-size: 18px; font-weight: bold;
@@ -127,6 +133,7 @@ h1.main-title {
 .quiz-btn.yes { background: var(--yes); box-shadow: 0 4px 10px rgba(255, 94, 0, 0.3); }
 .quiz-btn.no { background: var(--no); color: #fff; }
 
+/* 결과 화면 */
 .result-badge {
   display: inline-block; padding: 10px 24px; border-radius: 50px;
   font-size: 22px; font-weight: 900; color: white; margin: 20px 0 10px;
@@ -140,6 +147,7 @@ h1.main-title {
   margin-bottom: 30px; color: #444; font-size: 16px; line-height: 1.6; word-break: keep-all;
 }
 
+/* 결과별 색상 */
 .bg-danger { background: var(--danger); box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4); }
 .bg-warn { background: var(--warn); color: #333 !important; box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4); }
 .bg-safe { background: var(--safe); box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4); }
@@ -148,6 +156,7 @@ h1.main-title {
 .text-warn { color: #efa006; }
 .text-safe { color: var(--safe); }
 
+/* 입력창 */
 #username {
   width: 100%; padding: 18px; border: 2px solid #eee; border-radius: 12px;
   font-size: 18px; margin-bottom: 20px; text-align: center;
