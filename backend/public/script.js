@@ -1,3 +1,7 @@
+// ===== 1. URL에서 사번(code) 추출하기 =====
+const urlParams = new URLSearchParams(window.location.search);
+const referralCode = urlParams.get("code") || ""; // 예: ?code=202501 -> 202501 저장
+
 // ===== 운전자 위험도 자가진단 데이터 =====
 const quizData = [
   { 
