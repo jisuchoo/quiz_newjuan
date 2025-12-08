@@ -134,43 +134,42 @@ function handleAnswer(isYes) {
   }, 150);
 }
 
+// ===== 2. 결과 전송 시 사번(referralCode) 함께 전송 =====
 function finishQuiz() {
   quizScreen.classList.add("hidden");
   resultScreen.classList.remove("hidden");
 
-  // 점수 애니메이션 효과를 위해 텍스트 먼저 세팅
+  // 결과 화면 텍스트 처리 (기존 동일)
   finalScore.textContent = `${score}점`;
-
-  // 기존 클래스 초기화
   resultBadge.className = "result-badge";
   finalScore.className = "final-score-text";
 
-  // 위험 점수에 따른 결과 판정
-  // 점수가 높을수록 위험(보험 필요)
   if (score >= 60) {
-    // 고위험군 -> 즉시 가입 필요
     resultBadge.textContent = "운전자보험 필수";
     resultBadge.classList.add("bg-danger");
     finalScore.classList.add("text-danger");
     finalMessage.innerHTML = `🚨 위험합니다!<br><b>${username}</b>님의 운전 환경은 '12대 중과실' 및 돌발 사고 위험에 매우 많이 노출되어 있습니다.<br><br>지금 운전자보험이 없다면<br>사고 시 <b>형사적 책임과 비용</b>을 온전히 감당해야 합니다.<br>전문가와 즉시 상담하세요.`;
   } else if (score >= 30) {
-    // 중위험군 -> 점검 필요
     resultBadge.textContent = "보장 점검 추천";
     resultBadge.classList.add("bg-warn");
     finalScore.classList.add("text-warn");
     finalMessage.innerHTML = `<b>${username}</b>님은 평소 안전운전을 하시지만,<br>도로 환경상 언제든 억울한 사고에 휘말릴 수 있습니다.<br><br>만약을 대비해<br><b>변호사 선임비용</b>과 <b>벌금</b> 한도가 충분한지<br>점검해보시는 것을 추천합니다. 🤔`;
   } else {
-    // 저위험군
     resultBadge.textContent = "안전 운전 중";
     resultBadge.classList.add("bg-safe");
     finalScore.classList.add("text-safe");
     finalMessage.innerHTML = `훌륭합니다! 👍<br><b>${username}</b>님은 매우 안전한 환경에서 운전하고 계시네요.<br><br>하지만 '민식이법' 등 법률이 계속 강화되고 있으니,<br>최신 법규에 맞춰 보험을 한번 가볍게 살펴보시면<br>더욱 완벽할 것입니다.`;
   }
 
-  // 서버로 데이터 전송 (통계용)
+  // ★ 변경된 부분: referer 추가 전송 ★
   fetch("/api/submit", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name: username, score: score, total: maxPossibleScore })
+    body: JSON.stringify({ 
+      name: username, 
+      score: score, 
+      total: maxPossibleScore,
+      referer: referralCode // 사번 전송
+    })
   }).catch(err => console.error("결과 전송 실패:", err));
 }
