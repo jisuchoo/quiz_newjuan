@@ -3,48 +3,55 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>O,X 퀴즈</title>
+  <title>운전자보험 필요성 점검</title>
   <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
   <div class="quiz-container">
-    <!-- 이름 입력 화면 -->
     <section id="start-screen" class="card">
-      <h1>🔥 인천지역단 O,X 퀴즈 🔥</h1>
-      <p class="muted">이름을 입력하고 시작하세요</p>
-      <input type="text" id="username" placeholder="이름 입력" />
-      <button id="start-btn">시작하기</button>
+      <h1 class="main-title">🚗 내 운전 환경<br>위험도 테스트</h1>
+      <p class="muted">나는 운전자보험이<br>꼭 필요한 상황일까?</p>
+      <input type="text" id="username" placeholder="성함 입력" />
+      <button id="start-btn">점검 시작하기</button>
     </section>
 
-    <!-- 퀴즈 화면 -->
     <section id="quiz-screen" class="hidden">
       <header class="quiz-header">
         <div class="quiz-status">
-          <span id="progress-text">0 / 0</span>
+          <span id="progress-text">1 / 9</span>
           <div class="progress-bar">
             <div id="progress-fill"></div>
           </div>
-          <span id="score-text">점수: 0</span>
         </div>
       </header>
 
       <div class="quiz-card">
-        <div class="quiz-emoji">🤔</div>
-        <p class="quiz-label" id="question-label">문제 0</p>
-        <p id="question" class="quiz-question">문제가 여기에 표시됩니다.</p>
+        <div class="quiz-category">Check Point</div>
+        <p class="quiz-question" id="question">문제가 여기에 표시됩니다.</p>
+        
+        <div class="quiz-desc-box">
+          <span id="quiz-desc">여기에 위험 포인트 설명이 나옵니다.</span>
+        </div>
       </div>
 
       <div class="quiz-buttons">
-        <button class="quiz-btn yes" data-answer="true">O</button>
-        <button class="quiz-btn no" data-answer="false">X</button>
+        <button class="quiz-btn yes" data-answer="yes">네<br>(그렇다)</button>
+        <button class="quiz-btn no" data-answer="no">아니요<br>(아니다)</button>
       </div>
     </section>
 
-    <!-- 결과 화면 -->
     <section id="result-screen" class="hidden card">
-      <h2>🎉 퀴즈 완료!</h2>
-      <p id="final-text">최종 점수: 0 / 0</p>
-      <p class="muted">수고하셨습니다 👏</p>
+      <h2>진단 결과</h2>
+      <div id="result-badge" class="result-badge">판정 중...</div>
+      
+      <p class="final-score-label">나의 도로 위 위험 지수</p>
+      <p id="final-score" class="final-score-text">0점</p>
+      
+      <div class="result-message-box">
+        <p id="final-message">결과 메시지</p>
+      </div>
+
+      <button id="restart-btn" class="restart-btn">다시 하기</button>
     </section>
   </div>
 
