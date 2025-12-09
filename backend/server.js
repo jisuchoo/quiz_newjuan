@@ -2,20 +2,21 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const path = require("path");
-// ★ DB 라이브러리 추가
 const Database = require("better-sqlite3");
 
 const app = express();
 
+// Middlewares
 app.use(bodyParser.json());
 app.use(cors());
 
-// ===== DB 설정 (파일로 저장됨) =====
-// 변경: '/data' 라는 절대 깨지지 않는 금고 안에 저장
-const path = require("path"); // (이미 위쪽에 선언되어 있다면 패스)
-const db = new Database(path.join("/data", "quiz.db"));
+// ===== DB 설정 (Render 유료 디스크 사용 시) =====
+// '/data' 경로는 Render Disk 설정과 일치해야 합니다.
+// 로컬(내 컴퓨터) 테스트 시 에러가 나면 '/data' 부분을 지우고 "quiz.db"만 남기세요.
+const dbPath = path.join("/data", "quiz.db"); 
+const db = new Database(dbPath);
 
-// 테이블(엑셀 시트 같은 것)이 없으면 만듭니다.
+// 테이블 생성
 db.exec(`
   CREATE TABLE IF NOT EXISTS scores (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -29,7 +30,7 @@ db.exec(`
 
 // ===== API =====
 
-// 1. 점수 제출 (저장)
+// 1. 점수 제출
 app.post("/api/submit", (req, res) => {
   try {
     const { name, score, total, referer } = req.body;
@@ -41,7 +42,6 @@ app.post("/api/submit", (req, res) => {
     const saveDate = new Date().toLocaleString("ko-KR", { hour12: false });
     const saveReferer = referer || "-";
 
-    // ★ DB에 데이터 삽입 (INSERT)
     const insert = db.prepare(`
       INSERT INTO scores (name, score, total, referer, date)
       VALUES (?, ?, ?, ?, ?)
@@ -56,10 +56,9 @@ app.post("/api/submit", (req, res) => {
   }
 });
 
-// 2. 점수 목록 조회 (불러오기)
+// 2. 점수 목록 조회
 app.get("/api/scores", (_req, res) => {
   try {
-    // ★ DB에서 데이터 가져오기 (최신순 정렬)
     const stmt = db.prepare("SELECT * FROM scores ORDER BY id DESC");
     const rows = stmt.all();
     
