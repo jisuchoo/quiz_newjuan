@@ -11,8 +11,9 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // ===== DB 설정 (파일로 저장됨) =====
-// 폴더에 'quiz.db' 라는 파일이 자동으로 생깁니다.
-const db = new Database("quiz.db");
+// 변경: '/data' 라는 절대 깨지지 않는 금고 안에 저장
+const path = require("path"); // (이미 위쪽에 선언되어 있다면 패스)
+const db = new Database(path.join("/data", "quiz.db"));
 
 // 테이블(엑셀 시트 같은 것)이 없으면 만듭니다.
 db.exec(`
