@@ -123,9 +123,13 @@ function renderQuestion() {
 }
 
 function handleAnswer(isYes) {
-  if (isYes) {
-    score += quizData[current].score;
+  const currentQuestion = quizData[current];
+  
+  // 사용자가 선택한 값(isYes)과 문제의 정답(currentQuestion.answer)이 일치하는지 확인
+  if (isYes === currentQuestion.answer) {
+    score += currentQuestion.score;
   }
+  
   current++;
   setTimeout(() => renderQuestion(), 150);
 }
@@ -136,23 +140,19 @@ function finishQuiz() {
 
   finalScore.textContent = `${score}점`;
   resultBadge.className = "result-badge";
-  finalScore.className = "final-score-text";
 
-  if (score >= 60) {
-    resultBadge.textContent = "운전자보험 필수";
-    resultBadge.classList.add("bg-danger");
-    finalScore.classList.add("text-danger");
-    finalMessage.innerHTML = `🚨 위험합니다!<br><b>${username}</b>님의 운전 환경은 '12대 중과실' 및 돌발 사고 위험에 매우 많이 노출되어 있습니다.<br><br>지금 운전자보험이 없다면<br>사고 시 <b>형사적 책임과 비용</b>을 온전히 감당해야 합니다.<br>전문가와 즉시 상담하세요.`;
-  } else if (score >= 30) {
-    resultBadge.textContent = "보장 점검 추천";
-    resultBadge.classList.add("bg-warn");
-    finalScore.classList.add("text-warn");
-    finalMessage.innerHTML = `<b>${username}</b>님은 평소 안전운전을 하시지만,<br>도로 환경상 언제든 억울한 사고에 휘말릴 수 있습니다.<br><br>만약을 대비해<br><b>변호사 선임비용</b>과 <b>벌금</b> 한도가 충분한지<br>점검해보시는 것을 추천합니다. 🤔`;
+  if (score >= 90) {
+    resultBadge.textContent = "시그니처 전문가";
+    resultBadge.classList.add("bg-safe"); // 초록색 계열
+    finalMessage.innerHTML = `축하합니다! <b>${username}</b>님은 시그니처4.0의 핵심 내용을 완벽히 숙지하고 계시네요! 🏆`;
+  } else if (score >= 60) {
+    resultBadge.textContent = "우수한 실력";
+    resultBadge.classList.add("bg-warn"); // 주황색 계열
+    finalMessage.innerHTML = `훌륭합니다! <b>${username}</b>님, 조금만 더 보완하면 완벽한 전문가가 될 수 있습니다. 👍`;
   } else {
-    resultBadge.textContent = "안전 운전 중";
-    resultBadge.classList.add("bg-safe");
-    finalScore.classList.add("text-safe");
-    finalMessage.innerHTML = `훌륭합니다! 👍<br><b>${username}</b>님은 매우 안전한 환경에서 운전하고 계시네요.<br><br>하지만 '민식이법' 등 법률이 계속 강화되고 있으니,<br>최신 법규에 맞춰 보험을 한번 가볍게 살펴보시면<br>더욱 완벽할 것입니다.`;
+    resultBadge.textContent = "학습 필요";
+    resultBadge.classList.add("bg-danger"); // 빨간색 계열
+    finalMessage.innerHTML = `<b>${username}</b>님, 시그니처4.0 약관을 다시 한번 검토해보시면 영업에 큰 도움이 될 것 같습니다. 화이팅! 🔥`;
   }
 
   // ★ 사번(referer) 포함하여 전송
