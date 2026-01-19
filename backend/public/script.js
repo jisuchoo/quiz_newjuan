@@ -173,30 +173,33 @@ function finishQuiz() {
   quizScreen.classList.add("hidden");
   resultScreen.classList.remove("hidden");
 
-  finalScore.textContent = `${score}점`;
+  // 점수 표시 (소수점 제거)
+  const displayScore = Math.floor(score);
+  finalScore.textContent = `${displayScore}점`;
+  
   resultBadge.className = "result-badge";
 
   if (score >= 90) {
-    resultBadge.textContent = "시그니처 전문가";
-    resultBadge.classList.add("bg-safe"); // 초록색 계열
-    finalMessage.innerHTML = `축하합니다! <b>${username}</b>님은 시그니처4.0의 핵심 내용을 완벽히 숙지하고 계시네요! 🏆`;
+    resultBadge.textContent = "🏆 시그니처 전문가";
+    resultBadge.classList.add("bg-safe");
+    finalMessage.innerHTML = `대단합니다! <b>${username}</b>님은 시그니처4.0의 핵심을 완벽히 마스터하셨습니다. <br>지점의 전문 리더로서 적극적인 활동이 기대됩니다! ✨`;
   } else if (score >= 60) {
-    resultBadge.textContent = "우수한 실력";
-    resultBadge.classList.add("bg-warn"); // 주황색 계열
-    finalMessage.innerHTML = `훌륭합니다! <b>${username}</b>님, 조금만 더 보완하면 완벽한 전문가가 될 수 있습니다. 👍`;
+    resultBadge.textContent = "⭐ 우수한 실력";
+    resultBadge.classList.add("bg-warn");
+    finalMessage.innerHTML = `훌륭한 성적입니다! <b>${username}</b>님, 부족한 부분을 조금만 더 보완하면 현장에서 최고의 무기가 될 것입니다. 👍`;
   } else {
-    resultBadge.textContent = "학습 필요";
-    resultBadge.classList.add("bg-danger"); // 빨간색 계열
-    finalMessage.innerHTML = `<b>${username}</b>님, 시그니처4.0 약관을 다시 한번 검토해보시면 영업에 큰 도움이 될 것 같습니다. 화이팅! 🔥`;
+    resultBadge.textContent = "📚 학습 필요";
+    resultBadge.classList.add("bg-danger");
+    finalMessage.innerHTML = `아쉬운 결과입니다. <b>${username}</b>님, 시그니처4.0의 특장점을 다시 한번 숙지하여 고객에게 더 정확한 가치를 전달해 보세요! 🔥`;
   }
 
-  // ★ 사번(referer) 포함하여 전송
+  // 서버 전송 (기존 유지)
   fetch("/api/submit", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ 
       name: username, 
-      score: score, 
+      score: displayScore, 
       total: maxPossibleScore,
       referer: referralCode 
     })
