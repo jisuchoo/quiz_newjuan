@@ -85,6 +85,21 @@
       render(f);
     });
 
+    const resetBtn = document.getElementById("reset-btn");
+
+    resetBtn.addEventListener("click", async () => {
+      if(!confirm("정말로 모든 응시 데이터를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.")) return;
+      
+      const res = await fetch("/api/reset", { method: "POST" });
+      const json = await res.json();
+      if(json.ok) {
+        alert("초기화되었습니다.");
+        load(); // 리스트 새로고침
+      } else {
+        alert("초기화 실패: " + json.error);
+      }
+    });
+
     refreshBtn.addEventListener("click", load);
     load();
   </script>
