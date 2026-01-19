@@ -69,6 +69,22 @@ app.get("/api/scores", (_req, res) => {
   }
 });
 
+// 3. 점수 데이터 전체 초기화 API
+app.post("/api/reset", (req, res) => {
+  try {
+    // scores 테이블의 모든 데이터 삭제
+    db.prepare("DELETE FROM scores").run();
+    
+    // (선택사항) ID(No.) 자동 증가 값을 1부터 시작하도록 초기화
+    db.prepare("DELETE FROM sqlite_sequence WHERE name='scores'").run();
+    
+    res.json({ ok: true, message: "데이터가 모두 초기화되었습니다." });
+  } catch (e) {
+    console.error("DB 초기화 에러:", e);
+    res.status(500).json({ ok: false, error: "초기화에 실패했습니다." });
+  }
+});
+
 // ===== Static files =====
 const staticDir = path.join(__dirname, "public");
 app.use(express.static(staticDir));
