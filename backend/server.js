@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const path = require("path");
+const fs = require("fs"); // 파일 시스템 모듈 추가
 const Database = require("better-sqlite3");
 
 const app = express();
@@ -10,10 +11,13 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-// ===== DB 설정 (Render 유료 디스크 사용 시) =====
-// '/data' 경로는 Render Disk 설정과 일치해야 합니다.
-// 로컬(내 컴퓨터) 테스트 시 에러가 나면 '/data' 부분을 지우고 "quiz.db"만 남기세요.
-const dbPath = path.join("/data", "quiz.db"); 
+// ===== DB 설정 (환경에 따른 경로 자동 선택) =====
+// Render 유료 디스크(/data)가 있으면 해당 경로를 사용하고, 없으면 현재 폴더를 사용합니다.
+const dbDir = "/data";
+const dbPath = fs.existsSync(dbDir) 
+  ? path.join(dbDir, "quiz.db") 
+  : path.join(__dirname, "quiz.db");
+
 const db = new Database(dbPath);
 
 // 테이블 생성
@@ -72,12 +76,8 @@ app.get("/api/scores", (_req, res) => {
 // 3. 점수 데이터 전체 초기화 API
 app.post("/api/reset", (req, res) => {
   try {
-    // scores 테이블의 모든 데이터 삭제
     db.prepare("DELETE FROM scores").run();
-    
-    // (선택사항) ID(No.) 자동 증가 값을 1부터 시작하도록 초기화
-    db.prepare("DELETE FROM sqlite_sequence WHERE name='scores'").run();
-    
+    db.prepare("DELETE FROM sqlite_sequence WHERE name='scores'").run(); // No. 초기화
     res.json({ ok: true, message: "데이터가 모두 초기화되었습니다." });
   } catch (e) {
     console.error("DB 초기화 에러:", e);
