@@ -6,23 +6,31 @@
   <title>퀴즈 결과 관리자</title>
   <link rel="stylesheet" href="./style.css" />
   <style>
-    .admin-wrap { max-width: 960px; margin: 24px auto; }
-    .admin-actions { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
-    .search-input { padding: 10px 12px; border: 1px solid #ddd; border-radius: 10px; flex: 1; min-width: 220px; }
+    .admin-wrap { max-width: 960px; margin: 24px auto; padding: 0 20px; }
+    .admin-actions { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+    .search-input { padding: 12px 16px; border: 1px solid #ddd; border-radius: 12px; flex: 1; min-width: 220px; font-size: 15px; }
+    
     table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 6px 20px rgba(0,0,0,0.06); }
-    th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: center; }
-    th { background: #fafafa; font-weight: 700; }
+    th, td { padding: 15px; border-bottom: 1px solid #eee; text-align: center; }
+    th { background: #fafafa; font-weight: 700; color: #555; }
     tr:last-child td { border-bottom: none; }
-    .link-btn { text-decoration: none; background: #eee; padding: 10px; border-radius: 10px; color: #333; font-size: 14px;}
+    
+    .link-btn { text-decoration: none; background: #eee; padding: 12px 20px; border-radius: 12px; color: #333; font-size: 14px; font-weight: bold; transition: background 0.2s; }
+    .link-btn:hover { background: #e0e0e0; }
+    
+    .reset-btn { background: #ff7675 !important; border: none; padding: 12px 20px; border-radius: 12px; color: white; cursor: pointer; font-weight: bold; }
+    .reset-btn:hover { background: #ee5253 !important; }
   </style>
 </head>
 <body>
   <div class="admin-wrap">
-    <h1>📋 참여자 현황 리스트</h1>
+    <h1 style="margin-bottom: 24px; color: #f37321;">📋 참여자 현황 리스트</h1>
+    
     <div class="admin-actions">
       <input id="search" class="search-input" type="text" placeholder="이름 또는 사번 검색" />
-      <button id="refresh-btn" class="quiz-btn yes" style="padding:10px; font-size:14px; flex:0;">새로고침</button>
-      <a href="/" class="link-btn">퀴즈 페이지로 이동</a>
+      <button id="refresh-btn" class="quiz-btn yes" style="padding:12px 20px; font-size:14px; flex:0; white-space:nowrap;">🔄 새로고침</button>
+      <button id="reset-btn" class="reset-btn">🗑️ 전체 초기화</button>
+      <a href="/" class="link-btn">🏠 홈으로</a>
     </div>
 
     <table id="scoreTable">
@@ -30,7 +38,8 @@
         <tr>
           <th>#</th>
           <th>이름</th>
-          <th>담당자(사번)</th> <th>위험점수</th>
+          <th>담당자(사번)</th> 
+          <th>획득 점수</th>
           <th>응시일시</th>
         </tr>
       </thead>
@@ -43,14 +52,20 @@
     const tbody = document.querySelector("#scoreTable tbody");
     const search = document.getElementById("search");
     const refreshBtn = document.getElementById("refresh-btn");
+    const resetBtn = document.getElementById("reset-btn");
     let cache = [];
 
+    // 데이터 렌더링 함수
     function render(list) {
       tbody.innerHTML = "";
+      
+      if (!list || list.length === 0) {
+        tbody.innerHTML = "<tr><td colspan='5' style='padding:40px; color:#888;'>데이터가 없습니다.</td></tr>";
+        return;
+      }
+
       list.forEach((r, idx) => {
         const tr = document.createElement("tr");
-        
-        // 사번 스타일링 (주황색 볼드)
         const refererDisplay = r.referer && r.referer !== "-" 
           ? `<span style="color:#f37321; font-weight:bold;">${r.referer}</span>` 
           : "<span style='color:#ccc;'>-</span>";
@@ -59,44 +74,48 @@
           <td>${idx + 1}</td>
           <td>${r.name}</td>
           <td>${refererDisplay}</td>
-          <td><strong>${r.score}</strong></td>
+          <td><strong>${Math.floor(r.score)}</strong></td>
           <td>${r.date}</td>
         `;
         tbody.appendChild(tr);
       });
     }
 
+    // 데이터 로드 함수
     async function load() {
-      const res = await fetch("/api/scores");
-      const json = await res.json();
-      if (!json.ok) {
-        alert(json.error || "불러오기에 실패했습니다.");
-        return;
+      try {
+        const res = await fetch("/api/scores");
+        const json = await res.json();
+        if (json.ok) {
+          cache = json.data;
+          render(cache);
+        }
+      } catch (err) {
+        console.error("로드 실패:", err);
       }
-      cache = json.data;
-      render(cache);
     }
 
+    // 검색 기능
     search.addEventListener("input", () => {
       const q = search.value.trim();
       if (!q) return render(cache);
-      // 이름 또는 사번으로 검색
       const f = cache.filter(x => x.name.includes(q) || (x.referer && x.referer.includes(q)));
       render(f);
     });
 
-    const resetBtn = document.getElementById("reset-btn");
-
+    // 전체 초기화 기능
     resetBtn.addEventListener("click", async () => {
-      if(!confirm("정말로 모든 응시 데이터를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.")) return;
+      if (!confirm("모든 데이터를 삭제하시겠습니까? 삭제된 데이터는 복구할 수 없습니다.")) return;
       
-      const res = await fetch("/api/reset", { method: "POST" });
-      const json = await res.json();
-      if(json.ok) {
-        alert("초기화되었습니다.");
-        load(); // 리스트 새로고침
-      } else {
-        alert("초기화 실패: " + json.error);
+      try {
+        const res = await fetch("/api/reset", { method: "POST" });
+        const json = await res.json();
+        if (json.ok) {
+          alert("초기화되었습니다.");
+          load();
+        }
+      } catch (err) {
+        alert("초기화 중 오류가 발생했습니다.");
       }
     });
 
