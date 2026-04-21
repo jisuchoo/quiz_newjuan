@@ -180,9 +180,9 @@ function finishQuiz() {
   resultBadge.className = "result-badge";
 
   if (score >= 90) {
-    resultBadge.textContent = "🏆 시그니처 전문가";
+    resultBadge.textContent = "🏆 정보미팅 전문가";
     resultBadge.classList.add("bg-safe");
-    finalMessage.innerHTML = `대단합니다! <b>${username}</b>님은 시그니처4.0의 핵심을 완벽히 마스터하셨습니다. <br>지점의 전문 리더로서 적극적인 활동이 기대됩니다! ✨`;
+    finalMessage.innerHTML = `대단합니다! <b>${username}</b>님은 신주안 정보미팅의 핵심을 완벽히 마스터하셨습니다. <br>지점의 전문 리더로서 적극적인 활동이 기대됩니다! ✨`;
   } else if (score >= 60) {
     resultBadge.textContent = "⭐ 우수한 실력";
     resultBadge.classList.add("bg-warn");
@@ -190,7 +190,7 @@ function finishQuiz() {
   } else {
     resultBadge.textContent = "📚 학습 필요";
     resultBadge.classList.add("bg-danger");
-    finalMessage.innerHTML = `아쉬운 결과입니다. <b>${username}</b>님, 시그니처4.0의 특장점을 다시 한번 숙지하여 고객에게 더 정확한 가치를 전달해 보세요! 🔥`;
+    finalMessage.innerHTML = `아쉬운 결과입니다. <b>${username}</b>님, 신주안 정보미팅을 다시 한번 숙지하여 고객에게 더 정확한 가치를 전달해 보세요! 🔥`;
   }
 
   // 서버 전송 (기존 유지)
