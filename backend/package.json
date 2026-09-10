@@ -4,10 +4,11 @@
   "description": "O,X quiz app with Express serving frontend and simple score API",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "postinstall": "npm rebuild better-sqlite3"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": "22.x"
   },
   "dependencies": {
     "body-parser": "^1.20.2",
