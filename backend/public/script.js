@@ -9,7 +9,7 @@ const quizData = [
     score: 6.25 
   },
   { 
-    question: "제왕절개수술비 담보는 100만원까지 가입 가능하다.", 
+    question: "제왕절개수술비 담보는 \n100만원까지 가입 가능하다.", 
     answer: false,
     score: 6.25 
   },
