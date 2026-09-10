@@ -137,6 +137,7 @@ h1.main-title {
   color: var(--text);
   line-height: 1.6;
   word-break: keep-all;
+  white-space: pre-line;
 }
 
 /* O/X 버튼 스타일 */
